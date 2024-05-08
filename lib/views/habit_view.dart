@@ -12,9 +12,9 @@ class HabitView extends ConsumerWidget {
 
     return switch (viewModel) {
       LoadingHabitViewModel() => const CircularProgressIndicator(),
-      LoadedHabitViewModel() => const Scaffold(
+      LoadedHabitViewModel() => Scaffold(
           body: Center(
-            child: Text("Placeholder"),
+            child: Text(viewModel.labelPlaceholder),
           ),
         ),
     };
