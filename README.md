@@ -61,3 +61,8 @@ done
 EOF
 chmod +x .git/hooks/pre-commit
 ```
+
+### Setting up Dev environment
+
+You need to copy the [config_secrets.json.template](assets%2Fconfig_secrets.json.template)
+and remove the .template after that your setup should run
