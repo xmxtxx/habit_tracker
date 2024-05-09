@@ -3,7 +3,8 @@ sealed class HabitViewModel {}
 class LoadingHabitViewModel extends HabitViewModel {}
 
 class LoadedHabitViewModel extends HabitViewModel {
-  String labelPlaceholder;
+  final List<String> habits;
+  final String labelPlaceholder;
 
-  LoadedHabitViewModel({required this.labelPlaceholder});
+  LoadedHabitViewModel({required this.habits, required this.labelPlaceholder});
 }

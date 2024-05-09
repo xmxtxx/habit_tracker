@@ -8,13 +8,37 @@ class HabitView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(HabitViewProvider.habitViewProvider);
+    final viewModel = ref.watch(habitListProvider);
 
     return switch (viewModel) {
       LoadingHabitViewModel() => const CircularProgressIndicator(),
       LoadedHabitViewModel() => Scaffold(
-          body: Center(
-            child: Text(viewModel.labelPlaceholder),
+          appBar: AppBar(title: const Text('Habit Tracker')),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.habits.length,
+                  itemBuilder: (_, index) => ListTile(
+                    title: Text(viewModel.habits[index]),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      ref.read(habitListProvider.notifier).addHabit(value);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    labelText: viewModel.labelPlaceholder,
+                    suffixIcon: const Icon(Icons.add),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
     };
