@@ -4,7 +4,7 @@ class LoadingHabitViewModel extends HabitViewModel {}
 
 class LoadedHabitViewModel extends HabitViewModel {
   final List<String> habits;
-  final String labelPlaceholder;
+  final String labelAddHabit;
 
-  LoadedHabitViewModel({required this.habits, required this.labelPlaceholder});
+  LoadedHabitViewModel({required this.habits, required this.labelAddHabit});
 }

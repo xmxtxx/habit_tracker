@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:habit_tracker/logic/habit_manager.dart';
 import 'package:habit_tracker/logic/providers/habit_view_provider.dart';
 import 'package:habit_tracker/view_model/habit_view_model.dart';
 
@@ -8,39 +9,43 @@ class HabitView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(habitListProvider);
+    final viewModel = ref.watch(HabitViewProvider.habitViewProvider);
+    final habits = ref.watch(habitManagerProvider);
 
-    return switch (viewModel) {
-      LoadingHabitViewModel() => const CircularProgressIndicator(),
-      LoadedHabitViewModel() => Scaffold(
-          appBar: AppBar(title: const Text('Habit Tracker')),
-          body: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: viewModel.habits.length,
-                  itemBuilder: (_, index) => ListTile(
-                    title: Text(viewModel.habits[index]),
-                  ),
-                ),
+    Widget body;
+    if (viewModel is LoadingHabitViewModel) {
+      body = const CircularProgressIndicator();
+    } else if (viewModel is LoadedHabitViewModel) {
+      body = Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: habits.length,
+              itemBuilder: (_, index) => ListTile(
+                title: Text(habits[index]),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      ref.read(habitListProvider.notifier).addHabit(value);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: viewModel.labelPlaceholder,
-                    suffixIcon: const Icon(Icons.add),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-    };
+          TextField(
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                ref.read(habitManagerProvider.notifier).addHabit(value);
+              }
+            },
+            decoration: InputDecoration(
+              labelText: viewModel.labelAddHabit,
+              suffixIcon: const Icon(Icons.add),
+            ),
+          ),
+        ],
+      );
+    } else {
+      body = const Text('Unexpected state');
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Habit Tracker')),
+      body: body,
+    );
   }
 }

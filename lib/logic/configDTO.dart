@@ -5,9 +5,9 @@ import 'package:flutter/services.dart' show rootBundle;
 class ConfigDTO {
   static const String _appConfig = 'appConfig_';
 
-  final String placeholder;
+  final String addHabit;
 
-  ConfigDTO({required this.placeholder});
+  ConfigDTO({required this.addHabit});
 
   static Future<ConfigDTO> parse(String language) async {
     final String configString;
@@ -33,6 +33,6 @@ class ConfigDTO {
     var appJsonConfigSecret = jsonConfigSecret[_appConfig];
     var configJson = {}..addAll(languageJson);
 
-    return ConfigDTO(placeholder: configJson['placeholder']);
+    return ConfigDTO(addHabit: configJson['addHabit']);
   }
 }
