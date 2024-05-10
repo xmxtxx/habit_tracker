@@ -1,14 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:habit_tracker/logic/habit_storage.dart';
+
 class HabitManager extends StateNotifier<List<String>> {
-  HabitManager() : super([]);
+  HabitManager() : super([]) {
+    _loadHabits();
+  }
+
+  Future<void> _loadHabits() async {
+    state = await HabitStorage.loadHabits();
+  }
 
   void addHabit(String habit) {
-    state = [...state, habit];
+    final updatedHabits = [...state, habit];
+    state = updatedHabits;
+    HabitStorage.saveHabits(updatedHabits);
   }
 
   void removeHabit(String habit) {
-    state = state.where((h) => h != habit).toList();
+    final updatedHabits = state.where((h) => h != habit).toList();
+    state = updatedHabits;
+    HabitStorage.saveHabits(updatedHabits);
   }
 }
 

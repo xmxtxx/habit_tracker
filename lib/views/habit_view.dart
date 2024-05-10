@@ -12,6 +12,8 @@ class HabitView extends ConsumerWidget {
     final viewModel = ref.watch(HabitViewProvider.habitViewProvider);
     final habits = ref.watch(habitManagerProvider);
 
+    final TextEditingController habitController = TextEditingController();
+
     Widget body;
     if (viewModel is LoadingHabitViewModel) {
       body = const CircularProgressIndicator();
@@ -27,14 +29,26 @@ class HabitView extends ConsumerWidget {
             ),
           ),
           TextField(
+            controller: habitController,
             onSubmitted: (value) {
               if (value.isNotEmpty) {
                 ref.read(habitManagerProvider.notifier).addHabit(value);
+                habitController.clear();
               }
             },
             decoration: InputDecoration(
               labelText: viewModel.labelAddHabit,
-              suffixIcon: const Icon(Icons.add),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  if (habitController.text.isNotEmpty) {
+                    ref
+                        .read(habitManagerProvider.notifier)
+                        .addHabit(habitController.text);
+                    habitController.clear();
+                  }
+                },
+              ),
             ),
           ),
         ],
