@@ -14,52 +14,45 @@ class HabitView extends ConsumerWidget {
 
     final TextEditingController habitController = TextEditingController();
 
-    Widget body;
-    if (viewModel is LoadingHabitViewModel) {
-      body = const CircularProgressIndicator();
-    } else if (viewModel is LoadedHabitViewModel) {
-      body = Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: habits.length,
-              itemBuilder: (_, index) => ListTile(
-                title: Text(habits[index]),
+    return switch (viewModel) {
+      LoadingHabitViewModel() => const CircularProgressIndicator(),
+      LoadedHabitViewModel() => Scaffold(
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: habits.length,
+                  itemBuilder: (_, index) => ListTile(
+                    title: Text(habits[index]),
+                  ),
+                ),
               ),
-            ),
-          ),
-          TextField(
-            controller: habitController,
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                ref.read(habitManagerProvider.notifier).addHabit(value);
-                habitController.clear();
-              }
-            },
-            decoration: InputDecoration(
-              labelText: viewModel.labelAddHabit,
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  if (habitController.text.isNotEmpty) {
-                    ref
-                        .read(habitManagerProvider.notifier)
-                        .addHabit(habitController.text);
+              TextField(
+                controller: habitController,
+                onSubmitted: (value) {
+                  if (value.isNotEmpty) {
+                    ref.read(habitManagerProvider.notifier).addHabit(value);
                     habitController.clear();
                   }
                 },
+                decoration: InputDecoration(
+                  labelText: viewModel.labelAddHabit,
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      if (habitController.text.isNotEmpty) {
+                        ref
+                            .read(habitManagerProvider.notifier)
+                            .addHabit(habitController.text);
+                        habitController.clear();
+                      }
+                    },
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      );
-    } else {
-      body = const Text('Unexpected state');
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Habit Tracker')),
-      body: body,
-    );
+        ),
+    };
   }
 }
